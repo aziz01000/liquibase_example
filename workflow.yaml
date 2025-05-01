@@ -1,0 +1,30 @@
+name: Apply DB Changelogs
+
+on:
+  push:
+    paths:
+      - 'changelogs/**.yaml'
+      - 'liquibase.properties'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  update-database:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Run Liquibase with Docker
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/liquibase/changelog \
+            liquibase/liquibase \
+            --defaultsFile=/liquibase/changelog/liquibase.properties \
+            update
+        env:
+          PGHOST: ${{ secrets.PGHOST }}
+          PGPORT: ${{ secrets.PGPORT }}
+          PGDATABASE: ${{ secrets.PGDATABASE }}
+          PGUSER: ${{ secrets.PGUSER }}
+          PGPASSWORD: ${{ secrets.PGPASSWORD }}

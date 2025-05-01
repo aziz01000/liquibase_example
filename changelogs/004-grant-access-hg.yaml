@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: grant-access-hg
+      author: abdul
+      changes:
+        - sql:
+            sql: |
+              GRANT CONNECT ON DATABASE liquibase_test TO hgs;
+              GRANT USAGE ON SCHEMA public TO hgs;
+              GRANT SELECT ON TABLE products TO hgs;
+              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO hgs;

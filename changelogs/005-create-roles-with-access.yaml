@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-roles-and-access
+      author: abdul
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              DO $$
+              BEGIN
+                -- Create admin role with full privileges
+                IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'admin') THEN
+                  CREATE ROLE admin LOGIN CREATEDB CREATEROLE INHERIT PASSWORD 'admin_password';
+                END IF;
+
+                -- Create user role with read/write privileges
+                IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'user') THEN
+                  CREATE ROLE "user" LOGIN INHERIT PASSWORD 'user_password';
+                END IF;
+
+                -- Create reader role with read-only access
+                IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'reader') THEN
+                  CREATE ROLE reader LOGIN INHERIT PASSWORD 'reader_password';
+                END IF;
+              END
+              $$;
+
+        - sql:
+            splitStatements: true
+            sql: |
+              -- Admin gets connect + all schema/table access
+              GRANT CONNECT ON DATABASE liquibase_test TO admin;
+              GRANT ALL ON SCHEMA public TO admin;
+              GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin;
+              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO admin;
+
+              -- User gets read/write access
+              GRANT CONNECT ON DATABASE liquibase_test TO "user";
+              GRANT USAGE ON SCHEMA public TO "user";
+              GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "user";
+              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "user";
+
+              -- Reader gets read-only access
+              GRANT CONNECT ON DATABASE liquibase_test TO reader;
+              GRANT USAGE ON SCHEMA public TO reader;
+              GRANT SELECT ON ALL TABLES IN SCHEMA public TO reader;
+              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO reader;

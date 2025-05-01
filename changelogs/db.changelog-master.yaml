@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: changelogs/001-create-roles.yaml
+  - include:
+      file: changelogs/002-create-table.yaml
+
+  - include:  
+      file: changelogs/004-grant-access-hg.yaml
+
+
+  - include:
+      file: changelogs/005-create-roles-with-access.yaml
+

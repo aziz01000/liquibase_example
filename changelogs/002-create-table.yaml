@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-products
+      author: abdul
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: NUMERIC(10, 2)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: insert-products
+      author: abdul
+      changes:
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: name
+                  value: "Laptop"
+              - column:
+                  name: price
+                  valueNumeric: 999.99
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: name
+                  value: "Headphones"
+              - column:
+                  name: price
+                  valueNumeric: 199.99

@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-roles-001
+      author: abdul
+      changes:
+        - sql:
+            splitStatements: true
+            sql: |
+              CREATE ROLE jks LOGIN PASSWORD 'gh_password';
+
+
+
+  - changeSet:
+      id: create-role-hgs
+      author: abdul
+      changes:
+        - sql:
+            splitStatements: true
+            sql: |
+              CREATE ROLE hgs LOGIN PASSWORD 'hgs_password';
+
+
+  - changeSet:
+      id: change-role-hgs
+      author: abdul
+      changes:
+        - sql:
+            splitStatements: true
+            sql: |
+              ALTER ROLE hgs WITH PASSWORD 'new_password';
+
+
+
+
+      
+
